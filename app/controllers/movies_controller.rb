@@ -7,7 +7,10 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+    
+    @all_ratings = Movie.all_ratings
+    @selected_ratings = params[:ratings] ? params[:ratings].keys : []
+    @movies = Movie.filter_by_ratings(@selected_ratings)
   end
 
   def new
@@ -18,7 +21,6 @@ class MoviesController < ApplicationController
     @movie = Movie.create!(movie_params)
     flash[:notice] = "#{@movie.title} was successfully created."
     redirect_to movies_path
-    @all_ratings = ['G','PG','PG-13','R']
   end
 
   def edit
