@@ -12,6 +12,7 @@ class MoviesController < ApplicationController
 
   def new
     # default: render 'new' template
+    @all_ratings = ['G','PG','PG-13','R']
   end
 
   def create
