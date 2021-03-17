@@ -12,13 +12,13 @@ class MoviesController < ApplicationController
 
   def new
     # default: render 'new' template
-    @all_ratings = ['G','PG','PG-13','R']
   end
 
   def create
     @movie = Movie.create!(movie_params)
     flash[:notice] = "#{@movie.title} was successfully created."
     redirect_to movies_path
+    @all_ratings = ['G','PG','PG-13','R']
   end
 
   def edit
