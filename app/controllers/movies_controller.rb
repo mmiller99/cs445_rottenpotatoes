@@ -5,12 +5,14 @@ class MoviesController < ApplicationController
     @movie = Movie.find(id) # look up movie by unique ID
     # will render app/views/movies/show.<extension> by default
   end
-
+  
   def index
-    
     @all_ratings = Movie.all_ratings
-    @selected_ratings = params[:ratings] ? params[:ratings].keys : []
-    @movies = Movie.filter_by_ratings(@selected_ratings)
+    @selected_ratings_hash = selected_ratings_hash
+    @selected_ratings = selected_ratings
+    @sort_key = sort_key
+    determine_hilite
+    @movies = Movie.filter_and_sort(@selected_ratings, @sort_key)
   end
 
   def new
@@ -46,5 +48,22 @@ class MoviesController < ApplicationController
   # This helps make clear which methods respond to requests, and which ones do not.
   def movie_params
     params.require(:movie).permit(:title, :rating, :description, :release_date)
+  end
+  def selected_all_hash
+    Hash[Movie.all_ratings.map {|rating|[rating, "1"]}]
+  end
+  def selected_ratings_hash
+    params[:ratings] || selected_all_hash
+  end
+  def selected_ratings
+    @selected_ratings_hash&.keys
+  end
+  def sort_key
+    params[:sort] || :id
+    p params[:sort]
+  end
+  def determine_hilite
+    @hilite_headers = {:title => "", :release_date => "", :id => ""}
+    @hilite_headers[sort_key] = "bg-warning hilite"
   end
 end
